@@ -1,25 +1,20 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-import mysql.connector
+import psycopg2
 import os
 
 app = Flask(__name__)
 CORS(app)
 
 # =========================
-# CONFIG (DEPLOY READY)
+# DATABASE (POSTGRES - RENDER)
 # =========================
-DB_CONFIG = {
-    "host": os.getenv("DB_HOST", "localhost"),
-    "user": os.getenv("DB_USER", "root"),
-    "password": os.getenv("DB_PASSWORD", ""),
-    "database": os.getenv("DB_NAME", "wallet_db"),
-    "port": int(os.getenv("DB_PORT", 3306))
-}
+DATABASE_URL = os.getenv("DATABASE_URL")
+
 
 def get_db():
     try:
-        return mysql.connector.connect(**DB_CONFIG)
+        return psycopg2.connect(DATABASE_URL)
     except Exception as e:
         print("❌ DB ERROR:", e)
         return None
@@ -32,13 +27,16 @@ def get_db():
 def login_page():
     return render_template('login.html')
 
+
 @app.route('/signup')
 def signup_page():
     return render_template('signup.html')
 
+
 @app.route('/dashboard')
 def dashboard():
     return render_template('index.html')
+
 
 @app.route('/notifications')
 def notifications_page():
@@ -175,7 +173,7 @@ def get_balance(user_id):
 
 
 # =========================
-# TRANSACTION (STABLE 🔥)
+# TRANSACTION
 # =========================
 @app.route('/api/transaction', methods=['POST'])
 def transaction():
@@ -197,9 +195,6 @@ def transaction():
 
         if t_type not in ["deposit", "withdraw"]:
             return jsonify({"error": "Invalid type"}), 400
-
-        # 🔥 START TRANSACTION
-        db.start_transaction()
 
         cursor.execute(
             "SELECT balance, username FROM users WHERE id=%s FOR UPDATE",
@@ -224,13 +219,11 @@ def transaction():
 
         balance = round(balance, 2)
 
-        # UPDATE
         cursor.execute(
             "UPDATE users SET balance=%s WHERE id=%s",
             (balance, user_id)
         )
 
-        # SAVE LOG
         message = f"{username} | {t_type.upper()} ₱{amount:.2f} | Balance: ₱{balance:.2f}"
 
         cursor.execute(
@@ -296,5 +289,5 @@ def health():
 # RUN
 # =========================
 if __name__ == '__main__':
-    print("🚀 PayBridge running at http://127.0.0.1:5000")
+    print("🚀 PayBridge running...")
     app.run(host="0.0.0.0", port=5000, debug=True)
