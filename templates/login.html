@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='login_signup/auth.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h2>Login</h2>
+
+    <!-- USERNAME -->
+    <input type="text" id="username" placeholder="Enter Username">
+
+    <!-- MPIN -->
+    <input type="password" id="mpin" placeholder="Enter 4-digit MPIN" maxlength="4">
+
+    <button id="loginBtn">Login</button>
+
+    <p id="msg"></p>
+
+    <a href="/signup">Create Account</a>
+</div>
+
+<!-- JS -->
+<script src="{{ url_for('static', filename='login_signup/login_signup.js') }}"></script>
+
+<script>
+    document.getElementById("loginBtn").addEventListener("click", login);
+</script>
+
+</body>
+</html>

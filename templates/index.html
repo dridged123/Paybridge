@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayBridge | Dashboard</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/dashboard/style.css">
+</head>
+<body>
+
+<div class="wallet-container">
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+    <header class="header">
+        <div class="header-left">
+            <h2 id="username-display">Welcome</h2>
+            <span class="user-id" id="user-id-display">Account ID: #---</span>
+        </div>
+
+        <!-- ✅ ADDED LOGOUT BUTTON -->
+        <div class="header-right">
+            <button id="logout-btn" class="logout-btn">Logout</button>
+        </div>
+    </header>
+
+
+    <!-- =========================
+         MAIN DASHBOARD
+    ========================== -->
+    <main class="main-dashboard">
+
+        <!-- BALANCE -->
+        <section class="balance-section">
+            <p>Available Balance</p>
+            <h1 id="bal">₱ 0.00</h1>
+            <button id="refresh-btn" class="refresh-btn">
+                ↻ Refresh Balance
+            </button>
+        </section>
+
+
+        <!-- TRANSACTION -->
+        <section class="action-section">
+            <h3>Quick Transaction</h3>
+
+            <input 
+                type="number" 
+                id="amt" 
+                placeholder="Enter Amount (₱)" 
+                min="1"
+            >
+            
+            <div class="btn-group">
+                <button id="deposit-btn" class="btn-dep">Deposit</button>
+                <button id="withdraw-btn" class="btn-wit">Withdraw</button>
+            </div>
+
+            <!-- ✅ FIXED HISTORY BUTTON -->
+            <div class="history-btn-container">
+                <button id="view-history-btn" class="view-all-btn">
+                    View Transaction History ➔
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         STATUS
+    ========================== -->
+    <footer id="status" class="status-msg">
+        System Ready
+    </footer>
+
+</div>
+
+
+<!-- =========================
+     TOAST NOTIFICATIONS
+========================== -->
+<div id="notification-toast-container" class="toast-container"></div>
+
+
+<!-- =========================
+     JAVASCRIPT
+========================== -->
+<script src="/static/dashboard/script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,344 @@
+:root {
+    --gcash-blue: #0047ba; 
+    --gcash-light-blue: #007aff;
+    --gcash-bg: #f4f7fa;
+    --white: #ffffff;
+    --text-dark: #2c3e50;
+    --text-gray: #8e9aaf;
+}
+
+/* =========================
+   GLOBAL
+========================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--gcash-bg);
+    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+.wallet-container {
+    background: var(--white);
+    width: 100%;
+    max-width: 800px; /* Mas pinasikip para maging mobile-app-like ang layout */
+    min-height: 700px;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px rgba(0, 71, 186, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================
+   HEADER
+========================= */
+.header {
+    background-color: var(--gcash-blue);
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.header h2 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.3rem;
+}
+
+.user-id {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    display: block;
+    margin-top: 2px;
+}
+
+/* LOGOUT */
+.logout-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.logout-btn:hover {
+    background: #e74c3c;
+    border-color: #e74c3c;
+}
+
+/* =========================
+   DASHBOARD CONTENT
+========================= */
+.main-dashboard {
+    display: flex;
+    flex-direction: column; /* Ginawang column layout para magkasunod pababa */
+    gap: 25px;
+    padding: 30px;
+    flex-grow: 1;
+    justify-content: center; /* Nilagay sa center ang balance at transactions */
+}
+
+/* =========================
+   BALANCE SECTION (UPPER PART)
+========================= */
+.balance-section {
+    background: linear-gradient(135deg, var(--gcash-blue), var(--gcash-light-blue));
+    color: white;
+    padding: 40px 30px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 12px 24px rgba(0, 71, 186, 0.2);
+}
+
+.balance-section p {
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    opacity: 0.9;
+    margin-bottom: 5px;
+}
+
+.balance-section h1 {
+    font-size: 3.5rem;
+    margin: 10px 0 20px 0;
+    font-weight: 800;
+}
+
+/* REFRESH BUTTON */
+.refresh-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.refresh-btn:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+/* =========================
+   ACTION SECTION (LOWER CENTER PART)
+========================= */
+.action-section {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid #eef2f6;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+    max-width: 550px; /* Nilimitahan ang lapad para maging center card lang */
+    width: 100%;
+    margin: 0 auto; /* Awtomatikong nilalagay sa gitna ng view */
+}
+
+.action-section h3 {
+    margin: 0;
+    color: var(--text-dark);
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: left;
+}
+
+/* INPUT AMOUNT */
+.action-section input {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-dark);
+    background-color: #f8fafc;
+    transition: all 0.2s;
+}
+
+.action-section input:focus {
+    outline: none;
+    border-color: var(--gcash-light-blue);
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+}
+
+.action-section input::placeholder {
+    color: #a0aec0;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+/* BUTTON GROUP */
+.btn-group {
+    display: flex;
+    gap: 15px;
+}
+
+button.btn-dep,
+button.btn-wit {
+    flex: 1;
+    padding: 16px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+/* Deposit */
+.btn-dep {
+    background: var(--gcash-blue);
+    color: white;
+}
+
+.btn-dep:hover {
+    background: #003a9e;
+    transform: translateY(-2px);
+}
+
+.btn-dep:active {
+    transform: translateY(0);
+}
+
+/* Withdraw */
+.btn-wit {
+    background: #f0f6ff;
+    color: var(--gcash-blue);
+    border: 1px solid #dce8ff;
+}
+
+.btn-wit:hover {
+    background: #dce8ff;
+    transform: translateY(-2px);
+}
+
+.btn-wit:active {
+    transform: translateY(0);
+}
+
+/* =========================
+   HISTORY LINK/BUTTON
+========================= */
+.history-btn-container {
+    margin-top: 5px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.view-all-btn {
+    background: none;
+    border: none;
+    color: var(--gcash-light-blue);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 5px 0;
+    transition: color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.view-all-btn:hover {
+    color: var(--gcash-blue);
+    text-decoration: underline;
+}
+
+/* =========================
+   STATUS BAR
+========================= */
+.status-msg {
+    text-align: center;
+    padding: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: #fafbfc;
+    border-top: 1px solid #edf2f7;
+    color: var(--text-gray);
+}
+
+/* =========================
+   TOAST
+========================= */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.toast {
+    background: white;
+    padding: 16px 22px;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    border-left: 6px solid var(--gcash-blue);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    min-width: 260px;
+    animation: toastSlideIn 0.3s ease forwards;
+}
+
+.toast.success { border-left-color: #2ec4b6; }
+.toast.error { border-left-color: #e74c3c; }
+
+@keyframes toastSlideIn {
+    from { opacity: 0; transform: translateX(120%); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 600px) {
+    .wallet-container {
+        border-radius: 0;
+        min-height: 100vh;
+    }
+
+    .main-dashboard {
+        padding: 20px;
+    }
+
+    .balance-section h1 {
+        font-size: 2.8rem;
+    }
+
+    .action-section {
+        padding: 20px;
+    }
+}

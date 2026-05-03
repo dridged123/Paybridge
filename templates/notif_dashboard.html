@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History | PayBridge</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/notification/notif_style.css">
+
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="notif-container">
+
+    <!-- HEADER -->
+    <div class="notif-header">
+        <div class="header-left">
+            <div class="pulse-icon"></div>
+            <h2>Transaction History</h2>
+        </div>
+
+        <div class="header-right">
+            <span id="user-info" class="user-info"></span>
+
+            <!-- ❌ no inline JS -->
+            <button id="back-btn" class="back-btn">
+                ← Back
+            </button>
+        </div>
+    </div>
+
+    <!-- LOG LIST -->
+    <div id="log-list" class="log-list">
+        <p class="empty-text">Loading your transactions...</p>
+    </div>
+
+</div>
+
+<!-- JS -->
+<script src="/static/notification/notif_script.js"></script>
+
+</body>
+</html>

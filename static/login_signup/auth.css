@@ -1,0 +1,122 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    /* Fintech Blue Gradient Background */
+    background: linear-gradient(135deg, #0052cc 0%, #007bff 100%);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+h2 {
+    color: #0052cc;
+    margin-bottom: 30px;
+    font-weight: 600;
+    font-size: 24px;
+}
+
+/* Input Fields Style */
+input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 2px solid #e1e4e8;
+    border-radius: 12px;
+    outline: none;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    background-color: #f8f9fa;
+}
+
+input:focus {
+    border-color: #007bff;
+    background-color: #fff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}
+
+/* Specific styling for MPIN (Centered dots) */
+input[type="password"] {
+    letter-spacing: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Button Style */
+button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+button:hover {
+    background-color: #0052cc;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Link/Anchor Style */
+a {
+    display: inline-block;
+    margin-top: 20px;
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* Message Text (Success/Error) */
+#msg {
+    margin-top: 15px;
+    font-size: 14px;
+    min-height: 20px;
+}
+
+.error {
+    color: #dc3545;
+}
+
+.success {
+    color: #28a745;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 480px) {
+    .container {
+        padding: 30px 20px;
+    }
+}
