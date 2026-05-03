@@ -1,5 +1,5 @@
 // =========================
-// CONFIG (FIXED FOR RENDER ✅)
+// CONFIG (RENDER READY)
 // =========================
 const LOGIN_URL = "/";
 
@@ -46,7 +46,7 @@ function showToast(message, type = "success") {
     if (!container) return;
 
     const toast = document.createElement("div");
-    toast.className = toast `${type}`;
+    toast.className = `toast ${type}`;
 
     let icon = "🔔";
     if (type === "success") icon = "✅";
@@ -74,7 +74,6 @@ async function getUser() {
 
     try {
         const res = await fetch(`/api/user/${user_id}`);
-
         if (!res.ok) throw new Error("User fetch failed");
 
         const data = await res.json();
@@ -99,7 +98,6 @@ async function getBal() {
 
     try {
         const res = await fetch(`/api/balance/${user_id}`);
-
         if (!res.ok) throw new Error("Balance fetch failed");
 
         const data = await res.json();
@@ -154,15 +152,24 @@ async function sendTransaction(type) {
     toggleButtons(true);
 
     try {
-        const res = await fetch(/api/transaction, {
+        const res = await fetch("/api/transaction", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ user_id, amount, type })
+            body: JSON.stringify({
+                user_id: Number(user_id), // 🔥 FIX
+                amount: amount,
+                type: type
+            })
         });
 
-        const data = await res.json();
+        let data;
+        try {
+            data = await res.json();
+        } catch {
+            data = { error: "Invalid server response" };
+        }
 
         if (res.ok) {
             const msg =
@@ -181,7 +188,7 @@ async function sendTransaction(type) {
             getBal();
 
         } else {
-            const errMsg = data.error || data.message || "Transaction failed";
+            const errMsg = data.error || "Transaction failed";
 
             if (status) {
                 status.innerText = errMsg;
@@ -200,9 +207,10 @@ async function sendTransaction(type) {
         }
 
         showToast("Connection error", "error");
-    }
 
-    toggleButtons(false);
+    } finally {
+        toggleButtons(false); // 🔥 ALWAYS ENABLE
+    }
 }
 
 
@@ -210,8 +218,8 @@ async function sendTransaction(type) {
 // BUTTON TOGGLE
 // =========================
 function toggleButtons(disabled) {
-    document.getElementById("deposit-btn")?.setAttribute("disabled", disabled);
-    document.getElementById("withdraw-btn")?.setAttribute("disabled", disabled);
+    document.getElementById("deposit-btn")?.disabled = disabled;
+    document.getElementById("withdraw-btn")?.disabled = disabled;
 }
 
 
