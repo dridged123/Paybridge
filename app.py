@@ -7,22 +7,31 @@ app = Flask(__name__)
 CORS(app)
 
 # =========================
-# DATABASE (POSTGRES - RENDER)
+# DATABASE CONFIG
 # =========================
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-print("DATABASE_URL:", DATABASE_URL)  # debug
+print("DATABASE_URL:", DATABASE_URL)  # DEBUG
+
 
 def get_db():
     try:
-        return psycopg2.connect(DATABASE_URL, sslmode='require')
+        if not DATABASE_URL:
+            print("❌ DATABASE_URL is missing")
+            return None
+
+        return psycopg2.connect(
+            DATABASE_URL,
+            sslmode='require'
+        )
+
     except Exception as e:
         print("❌ DB ERROR:", e)
         return None
 
 
 # =========================
-# AUTO CREATE TABLES 🔥
+# AUTO CREATE TABLES
 # =========================
 def init_db():
     db = get_db()
@@ -55,7 +64,6 @@ def init_db():
         print("✅ Tables ready")
 
     except Exception as e:
-        db.rollback()
         print("❌ INIT DB ERROR:", e)
 
     finally:
@@ -63,7 +71,7 @@ def init_db():
         db.close()
 
 
-# 🔥 IMPORTANT (for Render / gunicorn)
+# 🔥 IMPORTANT (RUN EVEN IN GUNICORN)
 init_db()
 
 
@@ -126,6 +134,7 @@ def signup():
 
     except Exception as e:
         db.rollback()
+        print("❌ SIGNUP ERROR:", e)
         return jsonify({"error": str(e)}), 500
 
     finally:
@@ -146,6 +155,9 @@ def login():
         username = data.get('username')
         mpin = data.get('mpin')
 
+        if not username or not mpin:
+            return jsonify({"error": "Missing fields"}), 400
+
         cursor.execute(
             "SELECT id FROM users WHERE username=%s AND mpin=%s",
             (username, mpin)
@@ -159,7 +171,33 @@ def login():
         return jsonify({"error": "Invalid credentials"}), 401
 
     except Exception as e:
+        print("❌ LOGIN ERROR:", e)
         return jsonify({"error": str(e)}), 500
+
+    finally:
+        cursor.close()
+        db.close()
+
+
+# =========================
+# USER
+# =========================
+@app.route('/api/user/<int:user_id>')
+def get_user(user_id):
+    db = get_db()
+    if db is None:
+        return jsonify({"error": "Database connection failed"}), 500
+
+    cursor = db.cursor()
+
+    try:
+        cursor.execute("SELECT username FROM users WHERE id=%s", (user_id,))
+        user = cursor.fetchone()
+
+        if user:
+            return jsonify({"username": user[0]})
+
+        return jsonify({"error": "User not found"}), 404
 
     finally:
         cursor.close()
@@ -302,11 +340,3 @@ def get_notifications(user_id):
 @app.route('/health')
 def health():
     return jsonify({"status": "ok"})
-
-
-# =========================
-# LOCAL RUN ONLY
-# =========================
-if __name__ == '__main__':
-    print("🚀 PayBridge running...")
-    app.run(host="0.0.0.0", port=5000, debug=True)

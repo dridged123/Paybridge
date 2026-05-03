@@ -1,7 +1,8 @@
 // =========================
-// CONFIG
+// CONFIG (FIXED FOR RENDER ✅)
 // =========================
-const LOGIN_URL = "http://127.0.0.1:5000";
+const LOGIN_URL = "/";
+
 
 // =========================
 // INIT
@@ -21,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         userDisplay.innerText = "Account ID: #" + user_id;
     }
 
-    // BUTTON EVENTS (SAFE)
+    // BUTTON EVENTS
     document.getElementById("deposit-btn")?.addEventListener("click", () => sendTransaction("deposit"));
     document.getElementById("withdraw-btn")?.addEventListener("click", () => sendTransaction("withdraw"));
     document.getElementById("refresh-btn")?.addEventListener("click", getBal);
@@ -45,7 +46,7 @@ function showToast(message, type = "success") {
     if (!container) return;
 
     const toast = document.createElement("div");
-    toast.className = `toast ${type}`;
+    toast.className = toast `${type}`;
 
     let icon = "🔔";
     if (type === "success") icon = "✅";
@@ -66,7 +67,7 @@ function showToast(message, type = "success") {
 
 
 // =========================
-// GET USER (SAFE + NO CRASH)
+// GET USER
 // =========================
 async function getUser() {
     const user_id = localStorage.getItem("user_id");
@@ -90,7 +91,7 @@ async function getUser() {
 
 
 // =========================
-// GET BALANCE (SAFE)
+// GET BALANCE
 // =========================
 async function getBal() {
     const user_id = localStorage.getItem("user_id");
@@ -131,7 +132,7 @@ async function getBal() {
 
 
 // =========================
-// TRANSACTION (NO REGEX BUG)
+// TRANSACTION
 // =========================
 async function sendTransaction(type) {
     const user_id = localStorage.getItem("user_id");
@@ -140,7 +141,6 @@ async function sendTransaction(type) {
 
     const amount = parseFloat(amtInput?.value);
 
-    // VALIDATION
     if (!amount || amount <= 0) {
         showToast("Enter valid amount", "error");
         return;
@@ -154,7 +154,7 @@ async function sendTransaction(type) {
     toggleButtons(true);
 
     try {
-        const res = await fetch(`/api/transaction`, {
+        const res = await fetch(/api/transaction, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -210,11 +210,8 @@ async function sendTransaction(type) {
 // BUTTON TOGGLE
 // =========================
 function toggleButtons(disabled) {
-    const dep = document.getElementById("deposit-btn");
-    const wit = document.getElementById("withdraw-btn");
-
-    if (dep) dep.disabled = disabled;
-    if (wit) wit.disabled = disabled;
+    document.getElementById("deposit-btn")?.setAttribute("disabled", disabled);
+    document.getElementById("withdraw-btn")?.setAttribute("disabled", disabled);
 }
 
 

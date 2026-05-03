@@ -1,9 +1,9 @@
 // =========================
-// CONFIG (SINGLE APP ✅)
+// CONFIG (PRODUCTION READY ✅)
 // =========================
-const API_URL = "http://127.0.0.1:5000/api";
-const DASHBOARD_URL = "http://127.0.0.1:5000/dashboard";
-const LOGIN_URL = "http://127.0.0.1:5000";
+const API_URL = "/api";
+const DASHBOARD_URL = "/dashboard";
+const LOGIN_URL = "/";
 
 
 // =========================
@@ -39,12 +39,9 @@ function setLoading(isLoading, mode = "login") {
 // LOGIN FUNCTION
 // =========================
 async function login() {
-    console.log("🔐 Login triggered");
-
     const username = document.getElementById("username")?.value.trim();
     const mpin = document.getElementById("mpin")?.value.trim();
 
-    // VALIDATION
     if (!username || !mpin) {
         showMessage("Please fill all fields", "error");
         return;
@@ -60,7 +57,7 @@ async function login() {
         showMessage("Logging in...", "loading");
 
         const res = await fetch(`${API_URL}/login`, {
-            method: "POST", // ✅ FIXED
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -68,7 +65,6 @@ async function login() {
         });
 
         const data = await res.json();
-        console.log("LOGIN RESPONSE:", data);
 
         if (res.ok && data.user_id) {
             localStorage.clear();
@@ -85,8 +81,8 @@ async function login() {
         }
 
     } catch (error) {
-        console.error("LOGIN ERROR:", error);
-        showMessage("Server offline or connection error.", "error");
+        console.error(error);
+        showMessage("Server error. Try again.", "error");
     }
 
     setLoading(false, "login");
@@ -97,12 +93,9 @@ async function login() {
 // SIGNUP FUNCTION
 // =========================
 async function signup() {
-    console.log("📝 Signup triggered");
-
     const username = document.getElementById("username")?.value.trim();
     const mpin = document.getElementById("mpin")?.value.trim();
 
-    // VALIDATION
     if (!username || !mpin) {
         showMessage("Please fill all fields", "error");
         return;
@@ -118,7 +111,7 @@ async function signup() {
         showMessage("Creating account...", "loading");
 
         const res = await fetch(`${API_URL}/signup`, {
-            method: "POST", // ✅ FIXED
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -126,10 +119,9 @@ async function signup() {
         });
 
         const data = await res.json();
-        console.log("SIGNUP RESPONSE:", data);
 
         if (res.ok) {
-            showMessage("Signup successful! Please login.", "success");
+            showMessage("Signup successful! Redirecting...", "success");
 
             setTimeout(() => {
                 window.location.href = LOGIN_URL;
@@ -140,8 +132,8 @@ async function signup() {
         }
 
     } catch (error) {
-        console.error("SIGNUP ERROR:", error);
-        showMessage("Server offline or connection error.", "error");
+        console.error(error);
+        showMessage("Server error. Try again.", "error");
     }
 
     setLoading(false, "signup");
@@ -152,13 +144,9 @@ async function signup() {
 // AUTO SESSION CHECK
 // =========================
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("🚀 Auth page loaded");
-
     const user_id = localStorage.getItem("user_id");
 
-    // auto redirect if logged in
     if (user_id && window.location.pathname === "/") {
-        console.log("✅ Session found → redirecting to dashboard");
         window.location.href = DASHBOARD_URL;
     }
 });

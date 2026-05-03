@@ -1,4 +1,7 @@
-const LOGIN_URL = "http://127.0.0.1:5000";
+// =========================
+// CONFIG (FIXED ✅)
+// =========================
+const LOGIN_URL = "/";
 
 // =========================
 // INIT
@@ -24,13 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadLogs();
 
-    // refresh every 3 seconds (not 2 para less spam)
+    // ⏱️ less spam, safe interval
     setInterval(loadLogs, 3000);
 });
 
 
 // =========================
-// LOAD LOGS (FIXED)
+// LOAD LOGS
 // =========================
 async function loadLogs() {
     const user_id = localStorage.getItem("user_id");
@@ -60,8 +63,7 @@ async function loadLogs() {
             const msg = item.msg || "No message";
             const time = item.time || "";
 
-            const isDeposit =
-                msg.toLowerCase().includes("deposit");
+            const isDeposit = msg.toLowerCase().includes("deposit");
 
             div.innerHTML = `
                 <div class="log-left">

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+    <title>Sign Up | PayBridge</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='login_signup/auth.css') }}">
@@ -13,16 +13,37 @@
 <div class="container">
     <h2>Create Account</h2>
 
-    <!-- USERNAME -->
-    <input type="text" id="username" placeholder="Enter Username">
+    <!-- FORM -->
+    <form id="signupForm">
 
-    <!-- MPIN -->
-    <input type="password" id="mpin" placeholder="Create 4-digit MPIN" maxlength="4" inputmode="numeric">
+        <!-- USERNAME -->
+        <input 
+            type="text" 
+            id="username" 
+            placeholder="Enter Username" 
+            required
+        >
 
-    <button id="signupBtn">Sign Up</button>
+        <!-- MPIN -->
+        <input 
+            type="password" 
+            id="mpin" 
+            placeholder="Create 4-digit MPIN" 
+            maxlength="4" 
+            pattern="\d{4}" 
+            inputmode="numeric"
+            required
+        >
 
+        <!-- BUTTON -->
+        <button type="submit" id="signupBtn">Sign Up</button>
+
+    </form>
+
+    <!-- MESSAGE -->
     <p id="msg"></p>
 
+    <!-- LINK -->
     <a href="/">Back to Login</a>
 </div>
 
@@ -30,7 +51,11 @@
 <script src="{{ url_for('static', filename='login_signup/login_signup.js') }}"></script>
 
 <script>
-    document.getElementById("signupBtn").addEventListener("click", signup);
+    // 🔥 HANDLE FORM SUBMIT (ENTER + CLICK)
+    document.getElementById("signupForm").addEventListener("submit", function(e) {
+        e.preventDefault(); // ❗ stop reload
+        signup();
+    });
 </script>
 
 </body>
