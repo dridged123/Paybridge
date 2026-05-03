@@ -11,10 +11,11 @@ CORS(app)
 # =========================
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+print("DATABASE_URL:", DATABASE_URL)  # debug
 
 def get_db():
     try:
-        return psycopg2.connect(DATABASE_URL)
+        return psycopg2.connect(DATABASE_URL, sslmode='require')
     except Exception as e:
         print("❌ DB ERROR:", e)
         return None
@@ -32,7 +33,6 @@ def init_db():
     cursor = db.cursor()
 
     try:
-        # USERS TABLE
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
@@ -42,7 +42,6 @@ def init_db():
         );
         """)
 
-        # NOTIFICATIONS TABLE
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS notifications (
             id SERIAL PRIMARY KEY,
@@ -56,11 +55,16 @@ def init_db():
         print("✅ Tables ready")
 
     except Exception as e:
+        db.rollback()
         print("❌ INIT DB ERROR:", e)
 
     finally:
         cursor.close()
         db.close()
+
+
+# 🔥 IMPORTANT (for Render / gunicorn)
+init_db()
 
 
 # =========================
@@ -168,18 +172,23 @@ def login():
 @app.route('/api/balance/<int:user_id>')
 def get_balance(user_id):
     db = get_db()
+    if db is None:
+        return jsonify({"error": "Database connection failed"}), 500
+
     cursor = db.cursor()
 
-    cursor.execute("SELECT balance FROM users WHERE id=%s", (user_id,))
-    result = cursor.fetchone()
+    try:
+        cursor.execute("SELECT balance FROM users WHERE id=%s", (user_id,))
+        result = cursor.fetchone()
 
-    cursor.close()
-    db.close()
+        if result:
+            return jsonify({"balance": float(result[0])})
 
-    if result:
-        return jsonify({"balance": float(result[0])})
+        return jsonify({"error": "User not found"}), 404
 
-    return jsonify({"error": "User not found"}), 404
+    finally:
+        cursor.close()
+        db.close()
 
 
 # =========================
@@ -188,13 +197,23 @@ def get_balance(user_id):
 @app.route('/api/transaction', methods=['POST'])
 def transaction():
     db = get_db()
+    if db is None:
+        return jsonify({"error": "Database connection failed"}), 500
+
     cursor = db.cursor()
 
     try:
         data = request.get_json() or {}
+
         user_id = int(data.get('user_id'))
         amount = float(data.get('amount'))
         t_type = data.get('type')
+
+        if amount <= 0:
+            return jsonify({"error": "Invalid amount"}), 400
+
+        if t_type not in ["deposit", "withdraw"]:
+            return jsonify({"error": "Invalid type"}), 400
 
         cursor.execute(
             "SELECT balance, username FROM users WHERE id=%s FOR UPDATE",
@@ -204,16 +223,20 @@ def transaction():
         result = cursor.fetchone()
 
         if not result:
+            db.rollback()
             return jsonify({"error": "User not found"}), 404
 
         balance, username = float(result[0]), result[1]
 
         if t_type == "withdraw":
             if balance < amount:
+                db.rollback()
                 return jsonify({"error": "Insufficient balance"}), 400
             balance -= amount
         else:
             balance += amount
+
+        balance = round(balance, 2)
 
         cursor.execute(
             "UPDATE users SET balance=%s WHERE id=%s",
@@ -229,10 +252,14 @@ def transaction():
 
         db.commit()
 
-        return jsonify({"status": "success", "balance": balance})
+        return jsonify({
+            "status": "success",
+            "balance": balance
+        })
 
     except Exception as e:
         db.rollback()
+        print("❌ TRANSACTION ERROR:", e)
         return jsonify({"error": str(e)}), 500
 
     finally:
@@ -246,22 +273,27 @@ def transaction():
 @app.route('/api/notifications/<int:user_id>')
 def get_notifications(user_id):
     db = get_db()
+    if db is None:
+        return jsonify({"error": "Database connection failed"}), 500
+
     cursor = db.cursor()
 
-    cursor.execute(
-        "SELECT message, created_at FROM notifications WHERE user_id=%s ORDER BY id DESC",
-        (user_id,)
-    )
+    try:
+        cursor.execute(
+            "SELECT message, created_at FROM notifications WHERE user_id=%s ORDER BY id DESC",
+            (user_id,)
+        )
 
-    rows = cursor.fetchall()
+        rows = cursor.fetchall()
 
-    cursor.close()
-    db.close()
+        return jsonify([
+            {"msg": r[0], "time": str(r[1])}
+            for r in rows
+        ])
 
-    return jsonify([
-        {"msg": r[0], "time": str(r[1])}
-        for r in rows
-    ])
+    finally:
+        cursor.close()
+        db.close()
 
 
 # =========================
@@ -273,9 +305,8 @@ def health():
 
 
 # =========================
-# RUN
+# LOCAL RUN ONLY
 # =========================
 if __name__ == '__main__':
-    init_db()  # 🔥 IMPORTANT
     print("🚀 PayBridge running...")
     app.run(host="0.0.0.0", port=5000, debug=True)
