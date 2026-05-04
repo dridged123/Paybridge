@@ -23,14 +23,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // BUTTON EVENTS
-    document.getElementById("deposit-btn")?.addEventListener("click", () => sendTransaction("deposit"));
-    document.getElementById("withdraw-btn")?.addEventListener("click", () => sendTransaction("withdraw"));
-    document.getElementById("refresh-btn")?.addEventListener("click", getBal);
-    document.getElementById("logout-btn")?.addEventListener("click", logout);
+    const depBtn = document.getElementById("deposit-btn");
+    const witBtn = document.getElementById("withdraw-btn");
+    const refBtn = document.getElementById("refresh-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+    const historyBtn = document.getElementById("view-history-btn");
 
-    document.getElementById("view-history-btn")?.addEventListener("click", () => {
-        window.location.href = "/notifications";
-    });
+    if (depBtn) depBtn.addEventListener("click", () => sendTransaction("deposit"));
+    if (witBtn) witBtn.addEventListener("click", () => sendTransaction("withdraw"));
+    if (refBtn) refBtn.addEventListener("click", getBal);
+    if (logoutBtn) logoutBtn.addEventListener("click", logout);
+
+    if (historyBtn) {
+        historyBtn.addEventListener("click", () => {
+            window.location.href = "/notifications";
+        });
+    }
 
     // INITIAL LOAD
     getUser();
@@ -78,9 +86,9 @@ async function getUser() {
 
         const data = await res.json();
 
-        if (data.username) {
-            document.getElementById("username-display").innerText =
-                "Welcome, " + data.username;
+        const nameEl = document.getElementById("username-display");
+        if (data.username && nameEl) {
+            nameEl.innerText = "Welcome, " + data.username;
         }
 
     } catch (e) {
@@ -102,20 +110,18 @@ async function getBal() {
 
         const data = await res.json();
 
-        if (data.balance !== undefined) {
-            const balEl = document.getElementById("bal");
+        const balEl = document.getElementById("bal");
 
-            if (balEl) {
-                balEl.innerText =
-                    `₱ ${Number(data.balance).toLocaleString("en-US", {
-                        minimumFractionDigits: 2
-                    })}`;
-            }
+        if (data.balance !== undefined && balEl) {
+            balEl.innerText =
+                `₱ ${Number(data.balance).toLocaleString("en-US", {
+                    minimumFractionDigits: 2
+                })}`;
+        }
 
-            if (status) {
-                status.innerText = "System Online";
-                status.style.color = "#27ae60";
-            }
+        if (status) {
+            status.innerText = "System Online";
+            status.style.color = "#27ae60";
         }
 
     } catch (e) {
@@ -139,6 +145,7 @@ async function sendTransaction(type) {
 
     const amount = parseFloat(amtInput?.value);
 
+    // VALIDATION
     if (!amount || amount <= 0) {
         showToast("Enter valid amount", "error");
         return;
@@ -158,7 +165,7 @@ async function sendTransaction(type) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                user_id: Number(user_id), // 🔥 FIX
+                user_id: Number(user_id),
                 amount: amount,
                 type: type
             })
@@ -209,17 +216,20 @@ async function sendTransaction(type) {
         showToast("Connection error", "error");
 
     } finally {
-        toggleButtons(false); // 🔥 ALWAYS ENABLE
+        toggleButtons(false);
     }
 }
 
 
 // =========================
-// BUTTON TOGGLE
+// BUTTON TOGGLE (FIXED ❌➡️✅)
 // =========================
 function toggleButtons(disabled) {
-    document.getElementById("deposit-btn")?.disabled = disabled;
-    document.getElementById("withdraw-btn")?.disabled = disabled;
+    const dep = document.getElementById("deposit-btn");
+    const wit = document.getElementById("withdraw-btn");
+
+    if (dep) dep.disabled = disabled;
+    if (wit) wit.disabled = disabled;
 }
 
 
